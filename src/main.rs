@@ -1,3 +1,5 @@
+mod icm;
+use anyhow::Result;
 use clap::{Args, Parser, Subcommand, ValueEnum};
 
 #[derive(Parser)]
@@ -14,7 +16,7 @@ enum Commands {
     Rgb(Rgb), // to rgb
 }
 
-#[derive(Args)]
+#[derive(Args, Debug)]
 struct Hsl {
     /// input image file for the hue of the output image
     #[arg(long = "hf")]
@@ -42,11 +44,11 @@ struct Hsl {
 
     /// height of output image
     #[arg(short = 't', long, default_value_t = 1080)]
-    height: u16,
+    height: u32,
 
     /// width of output image
     #[arg(short, long, default_value_t = 1920)]
-    width: u16,
+    width: u32,
 
     /// path of output image
     #[arg(short, long)]
@@ -54,14 +56,12 @@ struct Hsl {
 }
 
 /// image channel
-#[derive(ValueEnum, Clone)]
+#[derive(ValueEnum, Clone, Debug)]
 enum Channel {
     /// hue channel from input image
     H,
     /// saturation channel from input image
     S,
-    /// value channel from input image
-    V,
     /// lightness channel from input image
     L,
     /// red channel from input image
@@ -84,15 +84,18 @@ struct Rgb {
     blue: String,
 }
 
-fn main() {
+fn main() -> Result<()> {
     let cli = Cli::parse();
     match &cli.command {
         Commands::Hsl(args) => {
+            icm::hsl::generate_hsl_image(args)?;
             println!("hsv yo");
         }
         Commands::Rgb(args) => {
+            icm::rgb::generate_rgb_image(args)?;
             println!("rgb yo");
         }
     }
     println!("image channel mixing complete");
+    Ok(())
 }

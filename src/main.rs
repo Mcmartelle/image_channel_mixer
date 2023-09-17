@@ -17,7 +17,7 @@ enum Commands {
 }
 
 #[derive(Args, Debug)]
-struct Hsl {
+pub struct Hsl {
     /// input image file for the hue of the output image
     #[arg(long = "hf")]
     hue_file: String,
@@ -75,7 +75,7 @@ enum Channel {
 }
 
 #[derive(Args)]
-struct Rgb {
+pub struct Rgb {
     #[arg(short, long)]
     red: String,
     #[arg(short, long)]

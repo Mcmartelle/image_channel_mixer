@@ -43,7 +43,7 @@ pub struct Hsl {
     lightness_channel: Channel,
 
     /// height of output image
-    #[arg(short = 't', long, default_value_t = 1080)]
+    #[arg(short, long, default_value_t = 1080)]
     height: u32,
 
     /// width of output image
@@ -74,14 +74,43 @@ enum Channel {
     A,
 }
 
-#[derive(Args)]
+#[derive(Args, Debug)]
 pub struct Rgb {
+    /// input image file for the red component of the output image
+    #[arg(long = "rf")]
+    red_file: String,
+
+    /// channel of input file to use for output red channel
+    #[arg(long = "rc")]
+    red_channel: Channel,
+
+    /// input image file for green component of the output image
+    #[arg(long = "gf")]
+    green_file: String,
+
+    /// channel of input file to use for output green channel
+    #[arg(long = "gc")]
+    green_channel: Channel,
+
+    /// input image file for blue component of the output image 
+    #[arg(long = "bf")]
+    blue_file: String,
+
+    /// channel of input file to use for output blue channel
+    #[arg(long = "bc")]
+    blue_channel: Channel,
+
+    /// height of output image
+    #[arg(short, long, default_value_t = 1080)]
+    height: u32,
+
+    /// width of output image
+    #[arg(short, long, default_value_t = 1920)]
+    width: u32,
+
+    /// path of output image
     #[arg(short, long)]
-    red: String,
-    #[arg(short, long)]
-    green: String,
-    #[arg(short, long)]
-    blue: String,
+    output: String,
 }
 
 fn main() -> Result<()> {
@@ -89,11 +118,9 @@ fn main() -> Result<()> {
     match &cli.command {
         Commands::Hsl(args) => {
             icm::hsl::generate_hsl_image(args)?;
-            println!("hsv yo");
         }
         Commands::Rgb(args) => {
             icm::rgb::generate_rgb_image(args)?;
-            println!("rgb yo");
         }
     }
     println!("image channel mixing complete");

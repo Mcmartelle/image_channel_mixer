@@ -1,14 +1,14 @@
 use anyhow::Result;
-use image::imageops::{resize, FilterType};
+
 use image::io::Reader as ImageReader;
 
-use image::{self, DynamicImage, GenericImageView, ImageBuffer, Pixel, RgbImage, Rgba, RgbaImage};
+use image::{self, ImageBuffer, Pixel, RgbImage, Rgba};
 use octarine::Color;
 use std::path::Path;
 
 use crate::{Channel, Hsl};
 
-use super::convert::u8_to_nfloat;
+use super::convert::{resize_or_not, u8_to_nfloat};
 
 pub fn generate_hsl_image(args: &Hsl) -> Result<()> {
     let hue_raw = image::open(Path::new(&args.hue_file))?;
@@ -33,14 +33,6 @@ pub fn generate_hsl_image(args: &Hsl) -> Result<()> {
     }
     new_img.save(&args.output).unwrap();
     Ok(())
-}
-
-fn resize_or_not(img: &DynamicImage, width: u32, height: u32) -> RgbaImage {
-    if img.dimensions() != (width, height) {
-        return resize(img, width, height, FilterType::CatmullRom);
-    } else {
-        return img.to_rgba8();
-    }
 }
 
 fn convert_channel(channel: &Channel, pixel: Rgba<u8>) -> f32 {
